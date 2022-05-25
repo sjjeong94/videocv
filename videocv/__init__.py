@@ -1,1 +1,1 @@
-from videocv.video import Video
+from videocv.video import Video, Writer
