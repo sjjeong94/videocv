@@ -1,4 +1,5 @@
 import cv2
+from videocv.timer import Timer
 
 
 class Camera:
@@ -12,9 +13,14 @@ class Camera:
         self.fps = fps
         self.size = (width, height)
 
+        self.timer = Timer()
+        self.latency = 0.0
+
     def __call__(self):
         success, frame = self.cap.read()
         self.frame = frame
+
+        self.latency = self.timer()
 
         key = cv2.waitKey(1) & 0xFF
         if key == 27:

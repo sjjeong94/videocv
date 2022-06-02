@@ -8,6 +8,7 @@ def test_video():
     while video():
         image = video.frame
         writer(image)
+        print(video.timer.latency)
         cv2.imshow('image', image)
 
 
@@ -17,6 +18,7 @@ def test_camera():
     while camera():
         image = camera.frame
         writer(image)
+        print(camera.timer.latency)
         cv2.imshow('image', image)
 
 
