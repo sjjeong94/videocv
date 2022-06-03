@@ -14,7 +14,7 @@ class Camera:
         self.size = (width, height)
 
         self.timer = Timer()
-        self.latency = 0.0
+        self.latency = self.timer.latency
 
     def __call__(self):
         success, frame = self.cap.read()

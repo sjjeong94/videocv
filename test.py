@@ -8,7 +8,8 @@ def test_video():
     while video():
         image = video.frame
         writer(image)
-        print(video.timer.latency)
+        log = '%6.2f FPS' % (1/video.timer.latency)
+        cv2.putText(image, log, (0, 20), 0, 0.5, (255, 0, 0), 1)
         cv2.imshow('image', image)
 
 
@@ -18,10 +19,25 @@ def test_camera():
     while camera():
         image = camera.frame
         writer(image)
-        print(camera.timer.latency)
+        log = '%6.2f FPS' % (1/camera.timer.latency)
+        cv2.putText(image, log, (0, 20), 0, 0.5, (255, 0, 0), 1)
         cv2.imshow('image', image)
+
+
+def test_video2():
+    video = videocv.Video2('video/test.mp4')
+    video()
+    while True:
+        image = video.frame
+        log = '%6.2f FPS' % (1/video.timer.latency)
+        cv2.putText(image, log, (0, 20), 0, 0.5, (255, 0, 0), 1)
+        cv2.imshow('image', image)
+        if cv2.waitKey(1) == 27:
+            video.stop()
+            break
 
 
 if __name__ == '__main__':
     test_video()
     test_camera()
+    test_video2()

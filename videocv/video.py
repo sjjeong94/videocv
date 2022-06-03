@@ -1,4 +1,5 @@
 import cv2
+from threading import Thread
 from videocv.timer import Timer
 
 
@@ -14,7 +15,7 @@ class Video:
         self.size = (width, height)
 
         self.timer = Timer()
-        self.latency = 0.0
+        self.latency = self.timer.latency
 
     def __call__(self):
         success, frame = self.cap.read()
@@ -29,6 +30,37 @@ class Video:
 
     def __del__(self):
         self.cap.release()
+
+
+class Video2:
+    def __init__(self, video_file):
+        cap = cv2.VideoCapture(video_file)
+        fps = cap.get(cv2.CAP_PROP_FPS)
+        width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+        height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+
+        self.cap = cap
+        self.fps = fps
+        self.size = (width, height)
+
+        self.timer = Timer()
+        self.latency = self.timer.latency
+
+        self.success = True
+        self.running = True
+
+    def __call__(self):
+        self.success, self.frame = self.cap.read()
+        Thread(target=self.run, args=()).start()
+        return self
+
+    def run(self):
+        while self.running and self.success:
+            self.success, self.frame = self.cap.read()
+            self.latency = self.timer()
+
+    def stop(self):
+        self.running = False
 
 
 class Writer:

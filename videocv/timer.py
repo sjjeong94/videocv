@@ -3,7 +3,7 @@ import time
 
 class Timer:
     def __init__(self, count_max=30):
-        self.latency = 0.0
+        self.latency = 1e9
         self.count = 0
         self.count_max = count_max
         self.time_previous = time.time()
