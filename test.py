@@ -49,7 +49,25 @@ def test_video2():
             break
 
 
+def test_video2_cam():
+    video = videocv.Video2(0, speed=0.5)
+    video()
+    while True:
+        image = video.frame
+
+        log = '%8.2f FPS' % (1/video.timer.latency)
+        cv2.putText(image, log, (0, 20), 0, 0.5, (255, 0, 0), 1)
+        log = '%8d frames' % (video.timer.count)
+        cv2.putText(image, log, (0, 40), 0, 0.5, (255, 0, 0), 1)
+
+        cv2.imshow('image', image)
+        if cv2.waitKey(1) == 27:
+            video.stop()
+            break
+
+
 if __name__ == '__main__':
     test_video()
     test_camera()
     test_video2()
+    test_video2_cam()
