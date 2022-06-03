@@ -10,9 +10,8 @@ class Timer:
 
     def __call__(self):
         self.count += 1
-        if self.count >= self.count_max:
+        if self.count % self.count_max == 0:
             time_now = time.time()
-            self.latency = (time_now - self.time_previous) / self.count
+            self.latency = (time_now - self.time_previous) / self.count_max
             self.time_previous = time_now
-            self.count = 0
         return self.latency
