@@ -1,5 +1,5 @@
 import cv2
-from videocv.timer import Timer
+from videocv.timer import Timer, Timer2
 
 
 class Camera:
@@ -13,7 +13,7 @@ class Camera:
         self.fps = fps
         self.size = (width, height)
 
-        self.timer = Timer()
+        self.timer = Timer2()
         self.latency = self.timer.latency
 
     def __call__(self):

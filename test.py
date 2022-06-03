@@ -33,7 +33,7 @@ def test_camera():
 
 
 def test_video2():
-    video = videocv.Video2('video/test.mp4')
+    video = videocv.Video2('video/test.mp4', speed=2)
     video()
     while True:
         image = video.frame

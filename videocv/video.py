@@ -1,7 +1,7 @@
 import cv2
 import time
 from threading import Thread
-from videocv.timer import Timer
+from videocv.timer import Timer, Timer2
 
 
 class Video:
@@ -15,7 +15,7 @@ class Video:
         self.fps = fps
         self.size = (width, height)
 
-        self.timer = Timer()
+        self.timer = Timer2()
         self.latency = self.timer.latency
 
     def __call__(self):
@@ -34,7 +34,7 @@ class Video:
 
 
 class Video2:
-    def __init__(self, video_file):
+    def __init__(self, video_file, speed=1):
         cap = cv2.VideoCapture(video_file)
         fps = cap.get(cv2.CAP_PROP_FPS)
         width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
@@ -44,11 +44,14 @@ class Video2:
         self.fps = fps
         self.size = (width, height)
 
-        self.timer = Timer()
+        self.timer = Timer2()
         self.latency = self.timer.latency
 
         self.success = True
         self.running = True
+
+        self.time_sleep = 0.0
+        self.speed = speed
 
     def __call__(self):
         self.success, self.frame = self.cap.read()
@@ -59,6 +62,12 @@ class Video2:
         while self.running and self.success:
             self.success, self.frame = self.cap.read()
             self.latency = self.timer()
+
+            time_run = self.timer.time_delta - self.time_sleep
+            self.time_sleep = 1 / (self.fps * self.speed) - time_run
+            if self.time_sleep < 1e-6:
+                self.time_sleep = 1e-6
+            time.sleep(self.time_sleep)
 
     def stop(self):
         self.running = False
