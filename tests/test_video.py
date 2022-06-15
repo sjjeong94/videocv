@@ -19,3 +19,4 @@ def test_video():
     while video():
         i += 1
     assert i == count
+    assert i == video.frame_count
