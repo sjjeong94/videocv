@@ -17,3 +17,5 @@ class Timer:
 
         a = self.alpha
         self.latency = (1-a) * self.latency + a * self.time_delta
+
+        return self.latency

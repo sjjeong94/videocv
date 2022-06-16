@@ -29,10 +29,20 @@ class Video:
         key = cv2.waitKey(1) & 0xFF
         if key == 27:
             return False
+        elif key == ord('q'):
+            self.set_pos(self.get_pos() - 100)
+        elif key == ord('w'):
+            self.set_pos(self.get_pos() + 100)
         return success
 
     def __del__(self):
         self.cap.release()
+
+    def get_pos(self):
+        return self.cap.get(cv2.CAP_PROP_POS_FRAMES)
+
+    def set_pos(self, pos):
+        self.cap.set(cv2.CAP_PROP_POS_FRAMES, pos)
 
 
 class Video2:
@@ -57,10 +67,20 @@ class Video2:
         self.time_sleep = 0.0
         self.speed = speed
 
-    def __call__(self):
+        self.pos_reserved = -999999
+
         self.success, self.frame = self.cap.read()
         Thread(target=self.run, args=()).start()
-        return self
+
+    def __call__(self):
+        key = cv2.waitKey(1) & 0xFF
+        if key == 27:
+            self.stop()
+        elif key == ord('q'):
+            self.set_pos(self.get_pos() - 100)
+        elif key == ord('w'):
+            self.set_pos(self.get_pos() + 100)
+        return self.running
 
     def run(self):
         while self.running and self.success:
@@ -73,8 +93,18 @@ class Video2:
                 self.time_sleep = 1e-6
             time.sleep(self.time_sleep)
 
+            if self.pos_reserved != -999999:
+                self.cap.set(cv2.CAP_PROP_POS_FRAMES, self.pos_reserved)
+                self.pos_reserved = -999999
+
     def stop(self):
         self.running = False
+
+    def get_pos(self):
+        return self.cap.get(cv2.CAP_PROP_POS_FRAMES)
+
+    def set_pos(self, pos):
+        self.pos_reserved = pos
 
 
 class Writer:
