@@ -72,14 +72,20 @@ class Video2:
         self.success, self.frame = self.cap.read()
         Thread(target=self.run, args=()).start()
 
+        self.pos_prev = -1
+
     def __call__(self):
-        key = cv2.waitKey(1) & 0xFF
-        if key == 27:
-            self.stop()
-        elif key == ord('q'):
-            self.set_pos(self.get_pos() - 100)
-        elif key == ord('w'):
-            self.set_pos(self.get_pos() + 100)
+        while self.running and self.success:
+            key = cv2.waitKey(1) & 0xFF
+            if key == 27:
+                self.stop()
+            elif key == ord('q'):
+                self.set_pos(self.get_pos() - 100)
+            elif key == ord('w'):
+                self.set_pos(self.get_pos() + 100)
+            if self.pos_prev != self.get_pos():
+                self.pos_prev = self.get_pos()
+                break
         return self.running
 
     def run(self):
