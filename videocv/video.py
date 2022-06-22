@@ -16,19 +16,22 @@ class Video:
         self.fps = fps
         self.size = (width, height)
         self.frame_count = frame_count
+        self.step = 1
 
         self.timer = Timer()
         self.latency = self.timer.latency
 
     def __call__(self):
-        success, frame = self.cap.read()
-        self.frame = frame
-
-        self.latency = self.timer()
+        success = True
+        if self.step:
+            success, self.frame = self.cap.read()
+            self.latency = self.timer()
 
         key = cv2.waitKey(1) & 0xFF
         if key == 27:
             return False
+        elif key == 32:
+            self.step ^= 1
         elif key == ord('q'):
             self.set_pos(self.get_pos() - 100)
         elif key == ord('w'):
@@ -57,6 +60,7 @@ class Video2:
         self.fps = fps
         self.size = (width, height)
         self.frame_count = frame_count
+        self.step = 1
 
         self.timer = Timer()
         self.latency = self.timer.latency
@@ -79,6 +83,8 @@ class Video2:
             key = cv2.waitKey(1) & 0xFF
             if key == 27:
                 self.stop()
+            elif key == 32:
+                self.step ^= 1
             elif key == ord('q'):
                 self.set_pos(self.get_pos() - 100)
             elif key == ord('w'):
@@ -90,8 +96,9 @@ class Video2:
 
     def run(self):
         while self.running and self.success:
-            self.success, self.frame = self.cap.read()
-            self.latency = self.timer()
+            if self.step:
+                self.success, self.frame = self.cap.read()
+                self.latency = self.timer()
 
             time_run = self.timer.time_delta - self.time_sleep
             self.time_sleep = 1 / (self.fps * self.speed) - time_run
